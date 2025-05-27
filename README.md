@@ -54,57 +54,114 @@ Dataset ini terdiri dari 1338 data pelanggan dengan fitur-fitur:
 
 ### Exploratory Data Analysis (EDA)
 
+* Dataset tidak memiliki missing value
+* Dataset memiliki 1 duplicate data, yang langsung di drop, sehingga data menjadi 1337.
+* Dataset memiliki 9 outlier pada kolom `bmi` tetapi angka `bmi` nya masih masuk akal, dan karena outlier hanya sedikit dibanding jumlah data, maka outlier tidak dibuang.
+* Dataset akhir memiliki 1337 data pelanggan.
 * Distribusi target (`charges`) menunjukkan skew positif.
-* Fitur `smoker` memiliki dampak besar terhadap `charges`, dengan perokok memiliki biaya lebih tinggi secara signifikan.
-* Korelasi juga terlihat antara `age`, `bmi`, dan `charges`.
+* Korelasi terlihat antara `age`, `bmi`, dan `charges`. dengan kolom `age` memiliki korelasi yang lebih tinggi dibanding kolom numerik lain.
+* Korelasi juga terlihat pada Fitur `smoker` memiliki dampak besar terhadap `charges`, dengan perokok memiliki biaya lebih tinggi secara signifikan.
+
+
 
 ## Data Preparation
 
 Tahapan data preparation yang dilakukan:
 
-1. **Handling categorical data**:
-   * Menggunakan Label Encoding untuk fitur `sex`, dan `smoker`
+1. **Encoding fitur kategorikal**:
+   * Merupakan tahapan untuk mengubah data kategorikal menjadi numerik, karena model hanya menerima input numerik.
    * Menggunakan One-Hot Encoding untuk fitur `region`.
+   * Menggunakan Label Encoding untuk fitur `sex`, dan `smoker` karena  binary features.
 
-2. **Feature scaling**:
+2. **Split Dataset**:
 
-   * Menggunakan `StandardScaler` pada fitur numerik: `age`, `bmi`, `children`.
+   * Proses untuk membagi data menjadi train dan test dengan komposisi 80% data train dan 20% data test, ini dilakukan sebelum standarisasi agar tidaka da data leakage ke data test.
 
-3. **Train-Test Split**:
+3. **Standarisasi**:
 
-   * Membagi data menjadi 80% data latih dan 20% data uji menggunakan `train_test_split()`.
+   * Merupakan tahapan yang ditujukan untuk menyeragamkan fitur dengan skala yang sama, sehingga tidak ada fitur yang berat sebelah pada fitur numerik.
+   * Standarisasi dilakukan dengan Standard Scaler yang akan mengubah data sehingga memiliki mean 0 dan standar deviasi 1.
 
-Alasan dilakukan scaling adalah untuk memastikan fitur numerik berada dalam skala yang sama, agar model seperti Linear Regression dapat bekerja optimal.
+
 
 ## Modeling
+Menggunakan 3 model, diantaranya :
 
-Tiga model regresi digunakan:
+### Model 1: Linear Regression
 
-### 1. Linear Regression
+#### Cara Kerja
 
-* Kelebihan: Mudah diinterpretasikan, cepat.
-* Kekurangan: Tidak menangkap non-linearitas.
+Linear Regression mencari garis lurus terbaik dengan meminimalkan total kuadrat selisih antara prediksi dan nilai aktual.
 
-### 2. Random Forest Regressor
+Persamaan: $y = \beta_0 + \beta_1 x_1 + \dots + \beta_n x_n$
 
-* Kelebihan: Robust terhadap outlier, mampu menangkap interaksi non-linear.
-* Kekurangan: Interpretasi kompleks, bisa overfitting.
+#### Parameter Default
 
-### 3. XGBoost Regressor
+* `fit_intercept=True`: Menambahkan bias.
+* `normalize='deprecated'`: Tidak digunakan lagi di versi baru.
+* `copy_X=True`: Menyalin data sebelum fitting.
 
-* Kelebihan: Performa tinggi, penanganan regularisasi lebih baik.
-* Kekurangan: Butuh tuning parameter agar optimal.
+#### Kelebihan 
 
-Model terbaik dipilih berdasarkan metrik evaluasi.
+* Sederhana dan cepat.
+* Mudah diinterpretasi.
+
+#### Kekurangan 
+
+* Hanya menangkap hubungan linear.
+
+### Model 2: Random Forest Regressor
+
+#### Cara Kerja
+
+Membangun banyak decision tree dari subset data yang berbeda, lalu merata-ratakan prediksi dari semua pohon.
+
+#### Parameter Default
+
+* `n_estimators=100`: Jumlah pohon.
+* `max_depth=None`: Tidak dibatasi.
+* `random_state=42`: Untuk replikasi.
+* `criterion='squared_error'`: Fungsi loss.
+
+#### Kelebihan
+
+* Menangani non-linearitas.
+* Robust terhadap outlier.
+
+#### Kekurangan 
+
+* Interpretasi kompleks.
+
+### Model 3: XGBoost Regressor
+
+#### Cara Kerja
+
+Model boosting yang memperbaiki kesalahan dari model sebelumnya secara iteratif menggunakan gradient descent.
+
+#### Parameter Default
+
+* `objective='reg:squarederror'`: Fungsi loss.
+* `n_estimators=100`: Jumlah boosting rounds.
+* `learning_rate=0.1`: Langkah pembelajaran.
+* `random_state=42`: Konsistensi hasil.
+
+#### Kelebihan 
+
+* Performa tinggi.
+* Bisa diatur lewat regularisasi.
+
+#### Kekurangan 
+
+* Waktu training lebih lama.
 
 ## Evaluation
 
-Metrik evaluasi yang digunakan:
+Metrik yang digunakan:
 
-* **MAE (Mean Absolute Error)**: Rata-rata kesalahan absolut.
-* **MSE (Mean Squared Error)**: Rata-rata kesalahan kuadrat.
-* **RMSE**: Akar dari MSE, dalam satuan yang sama dengan target.
-* **R² Score**: Koefisien determinasi, semakin mendekati 1 berarti semakin baik.
+* **MAE (Mean Absolute Error)**: Rata-rata selisih absolut.
+* **MSE (Mean Squared Error)**: Rata-rata kuadrat selisih.
+* **RMSE**: Akar kuadrat MSE.
+* **R² Score**: Proporsi variansi yang dijelaskan model.
 
 ### Hasil Evaluasi
 
@@ -116,18 +173,24 @@ Metrik evaluasi yang digunakan:
 
 ### Interpretasi
 
-Random Forest menghasilkan performa terbaik dengan MAE dan RMSE paling rendah serta R² tertinggi.
+Model terbaik adalah **Random Forest**, karena memiliki:
+
+* MAE dan RMSE paling rendah
+* R² tertinggi (0.8773)
 
 ### Feature Importance (Random Forest)
 
-Fitur-fitur paling berpengaruh:
+Fitur paling berpengaruh:
 
-* `smoker_yes`
-* `bmi`
-* `age`
+1. `smoker_yes`
+2. `bmi`
+3. `age`
 
-Fitur `smoker_yes` memberikan kontribusi paling besar terhadap prediksi biaya asuransi, disusul oleh `bmi` dan `age`.
+Fitur `smoker_yes` menjadi indikator utama yang memengaruhi prediksi biaya.
 
 ---
 
-*Proyek ini menunjukkan bahwa model Random Forest paling efektif dalam memprediksi biaya asuransi berdasarkan data historis pelanggan. Insight yang diperoleh dari model juga dapat digunakan untuk memahami faktor risiko terbesar dalam penetapan biaya.*
+
+
+
+
