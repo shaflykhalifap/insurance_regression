@@ -68,6 +68,9 @@ Dataset ini terdiri dari 1338 data pelanggan dengan fitur-fitur:
 
 Tahapan data preparation yang dilakukan:
 
+1.**Drop Data Duplikat**:
+   * Pada sebelumnya di data preparation, kita cobe mendeteksi data duplikat menggunakan
+
 1. **Encoding fitur kategorikal**:
    * Merupakan tahapan untuk mengubah data kategorikal menjadi numerik, karena model hanya menerima input numerik.
    * Menggunakan One-Hot Encoding untuk fitur `region`.
