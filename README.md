@@ -69,18 +69,18 @@ Dataset ini terdiri dari 1338 data pelanggan dengan fitur-fitur:
 Tahapan data preparation yang dilakukan:
 
 1.**Drop Data Duplikat**:
-   * Pada sebelumnya di data preparation, kita cobe mendeteksi data duplikat menggunakan
+   * Pada sebelumnya di data preparation, kita coba mendeteksi data duplikat menggunakan ```python insurance_df.duplicated().sum()``` hasilnya terdapat 1 duplikat, sehingga kita menggunakan ```python insurance_df.drop_duplicates(inplace=True) ``` untuk menghapus data duplkikat itu, karena data duplikat sangat berpemgaruh terhadap hasil model, dan bisa jadi tidak bagus jika dibiarkan.
 
-1. **Encoding fitur kategorikal**:
+2. **Encoding fitur kategorikal**:
    * Merupakan tahapan untuk mengubah data kategorikal menjadi numerik, karena model hanya menerima input numerik.
    * Menggunakan One-Hot Encoding untuk fitur `region`.
    * Menggunakan Label Encoding untuk fitur `sex`, dan `smoker` karena  binary features.
 
-2. **Split Dataset**:
+3. **Split Dataset**:
 
    * Proses untuk membagi data menjadi train dan test dengan komposisi 80% data train dan 20% data test, ini dilakukan sebelum standarisasi agar tidaka da data leakage ke data test.
 
-3. **Standarisasi**:
+4. **Standarisasi**:
 
    * Merupakan tahapan yang ditujukan untuk menyeragamkan fitur dengan skala yang sama, sehingga tidak ada fitur yang berat sebelah pada fitur numerik.
    * Standarisasi dilakukan dengan Standard Scaler yang akan mengubah data sehingga memiliki mean 0 dan standar deviasi 1.
@@ -145,7 +145,7 @@ Model boosting yang memperbaiki kesalahan dari model sebelumnya secara iteratif 
 
 * `objective='reg:squarederror'`: Fungsi loss.
 * `n_estimators=100`: Jumlah boosting rounds.
-* `learning_rate=0.1`: Langkah pembelajaran.
+* `learning_rate=0.3`: Default untuk Langkah pembelajaran.
 * `random_state=42`: Konsistensi hasil.
 
 #### Kelebihan 
