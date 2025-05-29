@@ -99,7 +99,7 @@ insurance_df.drop_duplicates(inplace=True)
 4. **Scaling**:
 
    * Merupakan tahapan yang ditujukan untuk menyeragamkan fitur dengan skala yang sama, sehingga tidak ada fitur yang berat sebelah pada fitur numerik.
-   * Standarisasi dilakukan dengan Standard Scaler yang akan mengubah data sehingga memiliki mean 0 dan standar deviasi 1.
+   * Scaling dilakukan dengan cara Standarisasi menggunakan Standard Scaler yang akan mengubah data sehingga memiliki mean 0 dan standar deviasi 1.
 
 
 
