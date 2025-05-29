@@ -68,8 +68,24 @@ Dataset ini terdiri dari 1338 data pelanggan dengan fitur-fitur:
 
 Tahapan data preparation yang dilakukan:
 
-1.**Drop Data Duplikat**:
-   * Pada sebelumnya di data preparation, kita coba mendeteksi data duplikat menggunakan ```python insurance_df.duplicated().sum()``` hasilnya terdapat 1 duplikat, sehingga kita menggunakan ```python insurance_df.drop_duplicates(inplace=True) ``` untuk menghapus data duplkikat itu, karena data duplikat sangat berpemgaruh terhadap hasil model, dan bisa jadi tidak bagus jika dibiarkan.
+1. ***Drop Data Duplikat**:
+
+Pada tahap *data preparation*, kami melakukan pemeriksaan terhadap data duplikat menggunakan perintah berikut:
+
+```python
+# Mengecek jumlah baris yang terduplikat
+insurance_df.duplicated().sum()
+```
+
+Hasilnya menunjukkan bahwa terdapat **1 baris duplikat** dalam dataset. Karena keberadaan data duplikat dapat memengaruhi performa model dan menyebabkan bias, maka baris tersebut dihapus menggunakan perintah berikut:
+
+```python
+# Menghapus baris duplikat secara permanen
+insurance_df.drop_duplicates(inplace=True)
+```
+
+> Menghapus data duplikat merupakan langkah penting untuk memastikan bahwa model tidak belajar dari informasi yang berulang, sehingga hasil prediksi menjadi lebih akurat dan tidak bias.
+
 
 2. **Encoding fitur kategorikal**:
    * Merupakan tahapan untuk mengubah data kategorikal menjadi numerik, karena model hanya menerima input numerik.
@@ -80,7 +96,7 @@ Tahapan data preparation yang dilakukan:
 
    * Proses untuk membagi data menjadi train dan test dengan komposisi 80% data train dan 20% data test, ini dilakukan sebelum standarisasi agar tidaka da data leakage ke data test.
 
-4. **Standarisasi**:
+4. **Scaling**:
 
    * Merupakan tahapan yang ditujukan untuk menyeragamkan fitur dengan skala yang sama, sehingga tidak ada fitur yang berat sebelah pada fitur numerik.
    * Standarisasi dilakukan dengan Standard Scaler yang akan mengubah data sehingga memiliki mean 0 dan standar deviasi 1.
